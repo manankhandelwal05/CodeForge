@@ -20,7 +20,14 @@ const register = async (req,res)=>{
     
      const user =  await User.create(req.body);
      const token =  jwt.sign({_id:user._id , emailId:emailId, role:'user'},process.env.JWT_KEY,{expiresIn: 60*60});
-     res.cookie('token',token,{maxAge: 60*60*1000});
+     const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax",
+    maxAge: 60 * 60 * 1000
+});
      res.status(201).json({
     user: {
         _id: user._id,
@@ -63,7 +70,14 @@ const login = async (req,res)=>{
             throw new Error("Invalid Credentials");
 
         const token =  jwt.sign({_id:user._id , emailId:emailId, role:user.role},process.env.JWT_KEY,{expiresIn: 60*60});
-        res.cookie('token',token,{maxAge: 60*60*1000});
+        const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax",
+    maxAge: 60 * 60 * 1000
+});
         res.status(200).json({
     user: {
         _id: user._id,
@@ -94,7 +108,15 @@ const logout = async(req,res)=>{
     //    Token add kar dung Redis ke blockList
     //    Cookies ko clear kar dena.....
 
-    res.cookie("token",null,{expires: new Date(Date.now())});
+    const isProduction = process.env.NODE_ENV === "production";
+
+res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax"
+});
+
+res.send("Logged Out Successfully");
     res.send("Logged Out Succesfully");
 
     }
@@ -117,7 +139,14 @@ const adminRegister = async(req,res)=>{
     
      const user =  await User.create(req.body);
      const token =  jwt.sign({_id:user._id , emailId:emailId, role:user.role},process.env.JWT_KEY,{expiresIn: 60*60});
-     res.cookie('token',token,{maxAge: 60*60*1000});
+     const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", token, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "None" : "Lax",
+    maxAge: 60 * 60 * 1000
+});
     res.status(201).json({ message: "User Registered Successfully", token });
     }
     catch(err){
