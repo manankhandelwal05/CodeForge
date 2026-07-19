@@ -15,7 +15,7 @@ const cors = require('cors')
 // console.log("Hello")
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'process.env.FRONTEND_URL',
     credentials: true 
 }))
 
@@ -35,7 +35,7 @@ const InitalizeConnection = async ()=>{
 
         await Promise.all([main(),redisClient.connect()]);
         console.log("DB Connected");
-        
+        const PORT = process.env.PORT || 3000;
         app.listen(process.env.PORT, ()=>{
             console.log("Server listening at port number: "+ process.env.PORT);
         })
