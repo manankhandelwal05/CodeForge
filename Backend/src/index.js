@@ -15,7 +15,7 @@ const cors = require('cors')
 // console.log("Hello")
 
 app.use(cors({
-    origin: 'process.env.FRONTEND_URL',
+    origin: process.env.FRONTEND_URL,
     credentials: true 
 }))
 
