@@ -1,6 +1,28 @@
-# 🚀 CodeForge - AI Powered Coding Platform
+# 🚀 CodeForge
 
-CodeForge is a full-stack coding platform inspired by LeetCode that enables users to practice programming problems, execute code in multiple languages, receive AI-powered debugging assistance, and track their coding progress. The platform is designed to provide an interactive and modern coding experience with secure authentication and real-time features.
+<div align="center">
+
+### AI-Powered Online Coding Platform
+
+Practice coding, execute code in multiple languages, get AI-powered debugging assistance, and track your coding progress—all in one place.
+
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Express-green?logo=node.js)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-green?logo=mongodb)
+![Redis](https://img.shields.io/badge/Redis-Cache-red?logo=redis)
+![Socket.IO](https://img.shields.io/badge/Socket.IO-Realtime-black?logo=socketdotio)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-UI-38BDF8?logo=tailwindcss)
+![License](https://img.shields.io/badge/License-MIT-blue)
+
+</div>
+
+---
+
+## 📖 Overview
+
+CodeForge is a full-stack coding platform inspired by modern online coding websites. It enables users to solve programming problems, execute code securely using Judge0, receive AI-powered debugging assistance from Google Gemini, and monitor their coding progress through a personalized dashboard.
+
+The platform focuses on providing a seamless coding experience with secure authentication, real-time communication, and an intuitive user interface.
 
 ---
 
@@ -8,223 +30,221 @@ CodeForge is a full-stack coding platform inspired by LeetCode that enables user
 
 ### 🔐 Authentication
 
-* Secure JWT-based authentication
-* OTP verification during registration
-* Password hashing using bcrypt
-* Redis-based token blacklisting for secure logout
+* JWT Authentication
+* OTP Verification
+* Secure password hashing using bcrypt
+* Redis-based token blacklisting
 
 ### 💻 Online Code Execution
 
-* Execute code in multiple programming languages
-* Powered by Judge0 API
-* Real-time execution results
-* Compilation and runtime error handling
+* Multi-language support
+* Judge0 API integration
+* Instant execution results
+* Compilation & runtime error handling
 
 ### 🤖 AI Debugger
 
-* Integrated with Google Gemini AI
+* Google Gemini integration
 * Explains compilation and logical errors
-* Provides hints instead of complete solutions
-* Helps users understand concepts and improve problem-solving skills
+* Gives hints instead of complete solutions
+* Helps improve problem-solving skills
 
-### 📚 Coding Problems
+### 📚 Coding Platform
 
-* Browse coding problems by difficulty
-* Filter problems using tags
-* View problem descriptions, constraints, and examples
-* Submit and evaluate solutions instantly
+* Solve coding problems
+* Difficulty-based filtering
+* Tag-based filtering
+* Instant code submission
 
-### 📊 User Dashboard
+### 📈 Dashboard
 
 * Track solved problems
 * Monitor coding progress
-* View performance statistics
+* Personalized statistics
 
 ### ⚡ Real-Time Features
 
-* Socket.IO powered communication
-* Instant updates
+* Socket.IO integration
+* Live updates
 * Real-time discussions
 
-### 🎨 Modern UI
+### 🎨 Responsive UI
 
-* Responsive design
-* Dark theme
-* Built with React.js and Tailwind CSS
-* Clean and intuitive user experience
+* Modern dark theme
+* Mobile-friendly design
+* Fast and intuitive interface
 
 ---
 
 # 🛠️ Tech Stack
 
-## Frontend
-
-* React.js
-* Vite
-* Tailwind CSS
-* DaisyUI
-* React Router
-* Redux Toolkit
-* React Hook Form
-* Zod
-
-## Backend
-
-* Node.js
-* Express.js
-* MongoDB
-* Mongoose
-* Redis
-* Socket.IO
-* JWT Authentication
-* bcrypt
-
-## APIs & AI
-
-* Judge0 API
-* Google Gemini API
+| Category       | Technologies                                         |
+| -------------- | ---------------------------------------------------- |
+| Frontend       | React.js, Vite, Tailwind CSS, DaisyUI, Redux Toolkit |
+| Backend        | Node.js, Express.js                                  |
+| Database       | MongoDB, Redis                                       |
+| Authentication | JWT, bcrypt, OTP Verification                        |
+| APIs           | Judge0 API, Google Gemini API                        |
+| Real-Time      | Socket.IO                                            |
 
 ---
 
-# 📂 Project Structure
+# 🏗️ Architecture
 
+```text
+                +----------------------+
+                |      React App       |
+                +----------+-----------+
+                           |
+                    REST APIs / Socket.IO
+                           |
+                +----------v-----------+
+                |    Express Server    |
+                +----------+-----------+
+                           |
+        +------------------+-------------------+
+        |                  |                   |
+        |                  |                   |
++-------v------+    +-------v------+   +--------v--------+
+|  MongoDB     |    |    Redis     |   |    Judge0 API   |
+| User & Data  |    | OTP & JWT    |   | Code Execution  |
++--------------+    +--------------+   +-----------------+
+                           |
+                    +------v------+
+                    | Gemini API  |
+                    | AI Debugger |
+                    +-------------+
 ```
-CodeForge/
+
+---
+
+# 📂 Folder Structure
+
+```text
+CodeForge
 │
-├── frontend/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── redux/
-│   └── utils/
+├── frontend
+│   ├── src
+│   ├── components
+│   ├── pages
+│   ├── redux
+│   └── assets
 │
-├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── config/
-│   └── utils/
+├── backend
+│   ├── controllers
+│   ├── middleware
+│   ├── models
+│   ├── routes
+│   ├── config
+│   └── utils
 │
 └── README.md
 ```
 
 ---
 
-# 🚀 Getting Started
+# 🚀 Installation
 
-## Clone the Repository
+Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/codeforge.git
-cd codeforge
+git clone https://github.com/manankhandelwal05/CodeForge.git
 ```
 
----
+Move into the project
 
-## Install Dependencies
+```bash
+cd CodeForge
+```
 
-### Backend
+Install backend dependencies
 
 ```bash
 cd backend
 npm install
 ```
 
-### Frontend
+Install frontend dependencies
 
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 
 ---
 
-## Environment Variables
+# ⚙️ Environment Variables
 
 Create a `.env` file inside the backend directory.
 
 ```env
-PORT=3000
+PORT=
 
-MONGO_URI=your_mongodb_connection
+MONGO_URI=
 
-JWT_SECRET=your_secret_key
+JWT_SECRET=
 
-REDIS_URL=your_redis_url
+REDIS_URL=
 
-JUDGE0_API_KEY=your_judge0_api_key
+GEMINI_API_KEY=
 
-GEMINI_API_KEY=your_gemini_api_key
+JUDGE0_API_KEY=
 ```
 
 ---
 
-## Run the Application
+# ▶️ Run the Project
 
-### Backend
-
-```bash
-npm run dev
-```
-
-### Frontend
+Backend
 
 ```bash
 npm run dev
 ```
 
-Open your browser and visit:
+Frontend
 
-```
-http://localhost:5173
+```bash
+npm run dev
 ```
 
 ---
 
 # 📸 Screenshots
 
-Add screenshots of:
+> Replace these with actual screenshots.
 
-* Home Page
-* Login
-* Dashboard
-* Problem Page
-* Code Editor
-* AI Debugger
+| Home                      | Problem Page                 |
+| ------------------------- | ---------------------------- |
+| ![](screenshots/home.png) | ![](screenshots/problem.png) |
 
-Example:
-
-```
-/screenshots/home.png
-/screenshots/editor.png
-/screenshots/dashboard.png
-```
+| AI Debugger                   | Dashboard                      |
+| ----------------------------- | ------------------------------ |
+| ![](screenshots/debugger.png) | ![](screenshots/dashboard.png) |
 
 ---
 
-# 🌟 Future Improvements
+# 🌟 Future Enhancements
 
 * Coding contests
-* Company-wise interview questions
-* Leaderboard
+* Company-wise interview sheets
+* Leaderboards
 * Friend system
-* Collaborative coding rooms
-* AI-generated coding hints
+* Collaborative coding
+* AI-generated hints
 * Discussion forum
-* Profile achievements and badges
+* Achievement badges
 
 ---
 
 # 🤝 Contributing
 
-Contributions are welcome!
+Contributions are always welcome.
 
-1. Fork the repository
-2. Create a new feature branch
-3. Commit your changes
-4. Push to your branch
-5. Open a Pull Request
+1. Fork the repository.
+2. Create your feature branch.
+3. Commit your changes.
+4. Push the branch.
+5. Open a Pull Request.
 
 ---
 
@@ -234,9 +254,17 @@ This project is licensed under the MIT License.
 
 ---
 
-# 👨‍💻 Author
+# 👨‍💻 Developer
 
 **Manan Khandelwal**
 
-* LinkedIn: [https://linkedin.com/in/your-linkedin](https://www.linkedin.com/in/manan-khandelwal-582166289/)
+* GitHub: https://github.com/manankhandelwal05
+* LinkedIn: *(Add your LinkedIn profile here)*
 
+---
+
+<div align="center">
+
+### ⭐ If you found this project useful, consider giving it a Star!
+
+</div>
