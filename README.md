@@ -209,19 +209,7 @@ npm run dev
 
 ---
 
-# 📸 Screenshots
 
-> Replace these with actual screenshots.
-
-| Home                      | Problem Page                 |
-| ------------------------- | ---------------------------- |
-| ![](screenshots/home.png) | ![](screenshots/problem.png) |
-
-| AI Debugger                   | Dashboard                      |
-| ----------------------------- | ------------------------------ |
-| ![](screenshots/debugger.png) | ![](screenshots/dashboard.png) |
-
----
 
 # 🌟 Future Enhancements
 
@@ -259,7 +247,7 @@ This project is licensed under the MIT License.
 **Manan Khandelwal**
 
 * GitHub: https://github.com/manankhandelwal05
-* LinkedIn: *(Add your LinkedIn profile here)*
+* LinkedIn: https://www.linkedin.com/in/manan-khandelwal-582166289/
 
 ---
 
