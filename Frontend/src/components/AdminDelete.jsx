@@ -102,7 +102,7 @@ const filteredProblems = problems.filter((problem) =>
       <div className="mb-10">
 
 <button
-onClick={() => navigate("/admin/dashboard")}
+onClick={() => navigate("/admin")}
 className="flex items-center gap-2 text-gray-400 hover:text-white transition"
 >
 
