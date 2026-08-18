@@ -10,9 +10,19 @@ const saveEditorial = async (req, res) => {
         // const userId = req.result._id;
         
         const { problemId, textEditorial } = req.body;
-        console.log(problemId, textEditorial);
-        const userId = req.result._id;
-        console.log(userId);
+        console.log("problemId:", problemId, "textEditorial length:", textEditorial?.length);
+        
+        // Safely extract userId from either req.result (adminMiddleware) or req.user (userMiddleware)
+        const userId = req.result?._id || req.user?._id;
+        console.log("Extracted userId:", userId);
+        
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized: User ID not found in request."
+            });
+        }
+
         let editorial = await SolutionVideo.findOne({ problemId });
 
         if (!editorial) {
@@ -26,6 +36,7 @@ const saveEditorial = async (req, res) => {
         } else {
 
             editorial.textEditorial = textEditorial;
+            editorial.userId = userId; // Ensure userId is updated/set for legacy records missing it
             await editorial.save();
 
         }

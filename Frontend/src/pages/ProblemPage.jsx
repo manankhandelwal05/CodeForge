@@ -6,7 +6,7 @@ import axiosClient from "../utils/axiosClient"
 import SubmissionHistory from "../components/SubmissionHistory"
 import ChatAi from '../components/ChatAi';
 import Editorial from '../components/Editorial';
-import { Sparkles, Trash2 } from "lucide-react";
+import { Sparkles, Trash2, ArrowLeft, Play, Terminal, Code } from "lucide-react";
 const langMap = {
         cpp: 'c++',
         java: 'java',
@@ -14,6 +14,20 @@ const langMap = {
 };
 
 const LANGUAGES = ['javascript', 'java', 'cpp','c++', 'C++'];
+
+const formatTestCaseInput = (input) => {
+  if (!input) return "";
+  const str = String(input).trim();
+  if (str.includes("\n")) return str;
+  
+  const spaceIndex = str.indexOf(" ");
+  if (spaceIndex === -1) return str;
+  
+  const firstToken = str.slice(0, spaceIndex);
+  const rest = str.slice(spaceIndex + 1).trim();
+  
+  return `${firstToken}\n${rest}`;
+};
 
 const ProblemPage = () => {
   const [problem, setProblem] = useState(null);
@@ -145,8 +159,8 @@ const ProblemPage = () => {
 
   if (loading && !problem) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#0f0f10]">
-        <span className="loading loading-spinner loading-lg text-indigo-500"></span>
+      <div className="flex justify-center items-center min-h-screen bg-[#09090b]">
+        <span className="loading loading-spinner loading-lg text-zinc-400"></span>
       </div>
     );
   }
@@ -166,38 +180,44 @@ const ProblemPage = () => {
   ];
 
   return (
-    <div className="h-screen flex flex-col bg-[#0f0f10] text-gray-200">
-      {/* Page Header (replaces the old top navbar) */}
+    <div className="h-screen flex flex-col bg-[#09090b] text-gray-200 font-sans">
+      {/* Page Header */}
       {problem && (
-        <div className="flex items-center gap-4 px-6 py-4 border-b border-gray-800 bg-[#141416]">
-          <button
-            onClick={() => navigate(-1)}
-            className="btn btn-ghost btn-sm btn-circle text-gray-400 hover:text-white"
-            aria-label="Go back"
-          >
-            ←
-          </button>
-          <h1 className="text-lg font-semibold text-white">{problem.title}</h1>
-          <div className={`badge badge-outline text-xs px-3 py-3 ${getDifficultyColor(problem.difficulty)}`}>
-            {problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}
-          </div>
-          <div className="badge bg-indigo-500/10 text-indigo-400 border-indigo-500/30 text-xs px-3 py-3">
-            {problem.tags}
+        <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#27272a] bg-[#09090b]">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate(-1)}
+              className="h-8 w-8 rounded-lg bg-[#18181b] border border-[#27272a] flex items-center justify-center text-gray-400 hover:text-white hover:border-zinc-500 transition duration-200 cursor-pointer"
+              aria-label="Go back"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <h1 className="text-base font-bold text-white tracking-tight">{problem.title}</h1>
+            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border uppercase tracking-wider ${
+              problem.difficulty.toLowerCase() === 'easy' ? 'border-emerald-500/20 text-emerald-400 bg-emerald-500/5' :
+              problem.difficulty.toLowerCase() === 'medium' ? 'border-amber-500/20 text-amber-400 bg-amber-500/5' :
+              'border-rose-500/20 text-rose-400 bg-rose-500/5'
+            }`}>
+              {problem.difficulty}
+            </span>
+            <span className="text-[10px] text-gray-400 bg-[#18181b] border border-[#27272a] px-2.5 py-0.5 rounded-full font-semibold">
+              {problem.tags}
+            </span>
           </div>
         </div>
       )}
 
       <div className="flex flex-1 min-h-0">
         {/* Left Panel */}
-        <div className="w-1/2 flex flex-col border-r border-gray-800">
+        <div className="w-1/2 flex flex-col border-r border-[#27272a] bg-[#09090b]">
           {/* Left Tabs */}
-          <div className="flex gap-1 px-4 pt-2 bg-[#141416] border-b border-gray-800">
+          <div className="flex gap-1 px-4 bg-[#09090b] border-b border-[#27272a]">
             {leftTabs.map((tab) => (
               <button
                 key={tab.key}
-                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-4 py-3 text-xs font-semibold tracking-wider uppercase border-b-2 transition-all duration-200 cursor-pointer ${
                   activeLeftTab === tab.key
-                    ? 'border-indigo-500 text-white'
+                    ? 'border-white text-white bg-white/5'
                     : 'border-transparent text-gray-500 hover:text-gray-300'
                 }`}
                 onClick={() => setActiveLeftTab(tab.key)}
@@ -208,27 +228,38 @@ const ProblemPage = () => {
           </div>
 
           {/* Left Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-6 bg-[#09090b]">
             {problem && (
               <>
                 {activeLeftTab === 'description' && (
-                  <div>
+                  <div className="space-y-6">
                     <div className="prose max-w-none prose-invert">
-                      <div className="whitespace-pre-wrap text-sm leading-relaxed text-gray-300">
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed text-gray-300 font-normal">
                         {problem.description}
                       </div>
                     </div>
 
-                    <div className="mt-8">
-                      <h3 className="text-base font-semibold mb-4 text-white">Examples</h3>
+                    <div className="pt-4 border-t border-[#27272a]">
+                      <h3 className="text-sm font-bold text-white uppercase tracking-wider mb-4">Examples</h3>
                       <div className="space-y-4">
                         {problem.visibleTestCases.map((example, index) => (
-                          <div key={index} className="bg-[#1a1a1c] border border-gray-800 p-4 rounded-lg">
-                            <h4 className="font-semibold mb-2 text-sm text-gray-200">Example {index + 1}</h4>
-                            <div className="space-y-1.5 text-xs font-mono text-gray-400">
-                              <div><span className="text-gray-500">Input:</span> {example.input}</div>
-                              <div><span className="text-gray-500">Output:</span> {example.output}</div>
-                              <div><span className="text-gray-500">Explanation:</span> {example.explanation}</div>
+                          <div key={index} className="bg-[#18181b]/50 border border-[#27272a] p-5 rounded-xl shadow-sm">
+                            <h4 className="font-bold text-xs text-zinc-300 mb-3 uppercase tracking-wider">Example {index + 1}</h4>
+                            <div className="space-y-3 text-xs font-mono text-gray-300">
+                              <div className="bg-[#18181b]/70 p-3 rounded-lg border border-[#27272a]/30 whitespace-pre-wrap">
+                                <span className="text-gray-500 font-semibold uppercase tracking-wider text-[10px] mr-2 block mb-1 select-none">Input:</span>
+                                <span className="text-gray-200">{formatTestCaseInput(example.input)}</span>
+                              </div>
+                              <div className="bg-[#18181b]/70 p-3 rounded-lg border border-[#27272a]/30 whitespace-pre-wrap">
+                                <span className="text-gray-500 font-semibold uppercase tracking-wider text-[10px] mr-2 block mb-1 select-none">Output:</span>
+                                <span className="text-gray-200">{example.output}</span>
+                              </div>
+                              {example.explanation && (
+                                <div className="p-3 bg-[#18181b]/30 rounded-lg border border-[#27272a]/20 text-gray-400 leading-relaxed whitespace-pre-wrap">
+                                  <span className="text-gray-500 font-semibold uppercase tracking-wider text-[10px] mr-2 block mb-1 select-none">Explanation:</span>
+                                  {example.explanation}
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -238,99 +269,76 @@ const ProblemPage = () => {
                 )}
 
                 {activeLeftTab === 'editorial' && (
-                  <div className="prose max-w-none prose-invert">
-                    <h2 className="text-lg font-bold mb-4 text-white">Editorial</h2>
-                    <div className="text-sm leading-relaxed">
+                  <div className="space-y-4">
+                    <h2 className="text-base font-bold text-white uppercase tracking-wider mb-2">Editorial Guide</h2>
+                    <div className="bg-[#18181b]/50 border border-[#27272a] p-6 rounded-xl text-sm leading-relaxed">
                       <Editorial secureUrl={problem.secureUrl} thumbnailUrl={problem.thumbnailUrl} duration={problem.duration} textEditorial={problem.textEditorial} />
                     </div>
                   </div>
                 )}
 
                 {activeLeftTab === 'solutions' && (
-                  <div>
-                    <h2 className="text-lg font-bold mb-4 text-white">Solutions</h2>
+                  <div className="space-y-4">
+                    <h2 className="text-base font-bold text-white uppercase tracking-wider mb-2">Reference Solutions</h2>
                     <div className="space-y-6">
                       {problem.referenceSolution?.map((solution, index) => (
-                        <div key={index} className="border border-gray-800 rounded-lg overflow-hidden">
-                          <div className="bg-[#1a1a1c] px-4 py-2 border-b border-gray-800">
-                            <h3 className="font-semibold text-sm text-gray-200">{problem?.title} - {solution?.language}</h3>
+                        <div key={index} className="border border-[#27272a] rounded-xl overflow-hidden bg-[#18181b]/30 shadow-lg">
+                          <div className="bg-[#18181b] px-5 py-3 border-b border-[#27272a] flex items-center justify-between">
+                            <h3 className="font-bold text-xs text-gray-300 uppercase tracking-wider">{solution?.language} Solution</h3>
                           </div>
-                          <div className="p-4 bg-[#141416]">
-                            <pre className="text-xs overflow-x-auto text-gray-300">
+                          <div className="p-5 overflow-x-auto">
+                            <pre className="text-xs font-mono text-gray-300 leading-relaxed">
                               <code>{solution?.completeCode}</code>
                             </pre>
                           </div>
                         </div>
-                      )) || <p className="text-gray-500 text-sm">Solutions will be available after you solve the problem.</p>}
+                      )) || <p className="text-gray-500 text-sm italic">Solutions will be available after you solve the problem.</p>}
                     </div>
                   </div>
                 )}
 
                 {activeLeftTab === 'submissions' && (
-                  <div>
-                    <h2 className="text-lg font-bold mb-4 text-white">My Submissions</h2>
-                    <div className="text-gray-400">
+                  <div className="space-y-4">
+                    <h2 className="text-base font-bold text-white uppercase tracking-wider mb-2">Submission History</h2>
+                    <div className="bg-[#18181b]/50 border border-[#27272a] p-4 rounded-xl text-gray-400">
                       <SubmissionHistory problemId={problemId} />
                     </div>
                   </div>
                 )}
 
                 {activeLeftTab === "chatAI" && (
-  <div className="h-full flex flex-col bg-[#080202]">
+                  <div className="h-full flex flex-col bg-[#09090b]">
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-[#27272a] bg-[#09090b]">
+                      <div className="flex items-center gap-3">
+                        <Sparkles size={20} className="text-zinc-400" />
+                        <div>
+                          <h2 className="text-sm font-bold text-white uppercase tracking-wider">CODEFORGE AI</h2>
+                        </div>
+                      </div>
+                    </div>
 
-    {/* Header */}
-    <div className="flex items-center justify-between px-6 py-5 border-b border-[#30363D]">
-
-      <div>
-        <div className="flex items-center gap-3">
-          <Sparkles
-    size={30}
-    className="text-violet-500"
-/>
-
-          <div>
-            <h2 className="text-2xl font-bold text-white">
-              AI Assistant
-            </h2>
-
-            <p className="text-sm text-gray-400 mt-1">
-              Ask anything about this problem
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* <button className="px-4 py-2 rounded-lg border border-[#30363D] hover:bg-[#21262D] transition text-gray-300 text-sm ">
-        <Trash2 size={18} />
-<span>Clear Chat</span>
-      </button> */}
-
-    </div>
-
-    {/* Chat Area */}
-    <div className="flex-1 overflow-hidden">
-
-      <ChatAi problem={problem} />
-
-    </div>
-
-  </div>
-)}
+                    {/* Chat Area */}
+                    <div className="flex-1 overflow-hidden">
+                      <ChatAi problem={problem} />
+                    </div>
+                  </div>
+                )}
               </>
             )}
           </div>
         </div>
 
         {/* Right Panel */}
-        <div className="w-1/2 flex flex-col">
+        <div className="w-1/2 flex flex-col bg-[#09090b]">
           {/* Right Tabs */}
-          <div className="flex gap-1 px-4 pt-2 bg-[#141416] border-b border-gray-800">
+          <div className="flex gap-1 px-4 bg-[#09090b] border-b border-[#27272a]">
             {rightTabs.map((tab) => (
               <button
                 key={tab.key}
-                className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+                className={`px-4 py-3 text-xs font-semibold tracking-wider uppercase border-b-2 transition-all duration-200 cursor-pointer ${
                   activeRightTab === tab.key
-                    ? 'border-indigo-500 text-white'
+                    ? 'border-white text-white bg-white/5'
                     : 'border-transparent text-gray-500 hover:text-gray-300'
                 }`}
                 onClick={() => setActiveRightTab(tab.key)}
@@ -341,24 +349,21 @@ const ProblemPage = () => {
           </div>
 
           {/* Right Content */}
-          <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 flex flex-col min-h-0 bg-[#09090b]">
             {activeRightTab === 'code' && (
-              <div className="flex-1 flex flex-col min-h-0">
+              <div className="flex-1 flex flex-col min-h-0 bg-[#1e1e1e]">
                 {/* Language Selector */}
-               {/* Language Selector */}
-<div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 bg-[#141416]">
-
-  <select
-    value={selectedLanguage}
-    onChange={(e) => handleLanguageChange(e.target.value)}
-    className="bg-[#1E1E1E] border border-gray-700 text-gray-200 text-sm rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-  >
-    <option value="javascript">JavaScript</option>
-    <option value="java">Java</option>
-    <option value="cpp">C++</option>
-  </select>
-
-</div>
+                <div className="flex items-center justify-between px-4 py-2 bg-[#18181b] border-b border-[#27272a]">
+                  <select
+                    value={selectedLanguage}
+                    onChange={(e) => handleLanguageChange(e.target.value)}
+                    className="bg-[#09090b] border border-[#27272a] text-gray-300 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-zinc-400 cursor-pointer"
+                  >
+                    <option value="javascript">JavaScript</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                  </select>
+                </div>
 
                 {/* Monaco Editor */}
                 <div className="flex-1 min-h-0">
@@ -393,27 +398,29 @@ const ProblemPage = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="p-3 border-t border-gray-800 bg-[#141416] flex justify-between items-center">
+                <div className="p-3 border-t border-[#27272a] bg-[#09090b] flex justify-between items-center">
                   <button
-                    className="px-3 py-1.5 rounded-md text-xs font-medium text-gray-400 hover:bg-gray-800"
+                    className="text-xs font-semibold text-gray-400 hover:text-white px-3 py-1.5 hover:bg-[#18181b] rounded-lg transition duration-200 cursor-pointer flex items-center gap-1.5"
                     onClick={() => setActiveRightTab('testcase')}
                   >
+                    <Terminal size={14} />
                     Console
                   </button>
                   <div className="flex gap-2">
                     <button
-                      className={`px-4 py-1.5 rounded-md text-xs font-medium border border-gray-700 text-gray-200 hover:bg-gray-800 flex items-center gap-1.5 ${loading ? 'opacity-60' : ''}`}
+                      className={`bg-[#18181b] hover:bg-[#27272a] border border-[#27272a] text-gray-300 text-xs font-semibold px-4 py-2 rounded-xl transition duration-200 flex items-center gap-1.5 cursor-pointer disabled:opacity-50`}
                       onClick={handleRun}
                       disabled={loading}
                     >
-                      ▶ Run
+                      <Play size={12} />
+                      Run
                     </button>
                     <button
-                      className={`px-4 py-1.5 rounded-md text-xs font-medium bg-indigo-500 text-white hover:bg-indigo-600 flex items-center gap-1.5 ${loading ? 'opacity-60' : ''}`}
+                      className={`bg-zinc-100 hover:bg-zinc-200 text-zinc-950 text-xs font-semibold px-4 py-2 rounded-xl transition duration-200 flex items-center gap-1.5 cursor-pointer disabled:opacity-50`}
                       onClick={handleSubmitCode}
                       disabled={loading}
                     >
-                      ➤ Submit
+                      Submit
                     </button>
                   </div>
                 </div>
@@ -421,25 +428,36 @@ const ProblemPage = () => {
             )}
 
             {activeRightTab === 'testcase' && (
-              <div className="flex-1 p-4 overflow-y-auto">
-                <h3 className="font-semibold mb-4 text-sm text-gray-200">Test Results</h3>
+              <div className="flex-1 p-6 overflow-y-auto">
+                <h3 className="font-bold text-xs text-white uppercase tracking-wider mb-4">Run Output Console</h3>
                 {runResult ? (
-                  <div className={`rounded-lg p-4 mb-4 border ${runResult.success ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
+                  <div className={`rounded-xl p-5 mb-4 border ${runResult.success ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-rose-500/20 bg-rose-500/5'}`}>
                     <div>
                       {runResult.success ? (
                         <div>
-                          <h4 className="font-bold text-sm text-green-400">✅ All test cases passed!</h4>
-                          <p className="text-xs mt-2 text-gray-400">Runtime: {runResult.runtime + " sec"}</p>
-                          <p className="text-xs text-gray-400">Memory: {runResult.memory + " KB"}</p>
+                          <h4 className="font-bold text-sm text-emerald-400 flex items-center gap-2">✓ All test cases passed!</h4>
+                          <div className="flex items-center gap-4 text-xs mt-2 text-gray-400">
+                            <span>Runtime: <strong className="text-gray-200">{runResult.runtime}s</strong></span>
+                            <span>Memory: <strong className="text-gray-200">{runResult.memory} KB</strong></span>
+                          </div>
 
-                          <div className="mt-4 space-y-2">
+                          <div className="mt-5 space-y-3">
                             {runResult.testCases.map((tc, i) => (
-                              <div key={i} className="bg-[#1a1a1c] border border-gray-800 p-3 rounded text-xs">
-                                <div className="font-mono text-gray-400">
-                                  <div><span className="text-gray-500">Input:</span> {tc.stdin}</div>
-                                  <div><span className="text-gray-500">Expected:</span> {tc.expected_output}</div>
-                                  <div><span className="text-gray-500">Output:</span> {tc.stdout}</div>
-                                  <div className="text-green-500">✓ Passed</div>
+                              <div key={i} className="bg-[#18181b] border border-[#27272a] p-4 rounded-lg text-xs">
+                                <div className="font-mono text-gray-300 space-y-3">
+                                  <div className="whitespace-pre-wrap">
+                                    <span className="text-gray-500 font-semibold text-[10px] uppercase block mb-1 select-none">Input:</span>
+                                    <div className="bg-[#09090b]/80 p-2.5 rounded border border-[#27272a]/40 text-gray-200">{formatTestCaseInput(tc.stdin)}</div>
+                                  </div>
+                                  <div className="whitespace-pre-wrap">
+                                    <span className="text-gray-500 font-semibold text-[10px] uppercase block mb-1 select-none">Expected Output:</span>
+                                    <div className="bg-[#09090b]/80 p-2.5 rounded border border-[#27272a]/40 text-emerald-400">{tc.expected_output}</div>
+                                  </div>
+                                  <div className="whitespace-pre-wrap">
+                                    <span className="text-gray-500 font-semibold text-[10px] uppercase block mb-1 select-none">Your Output:</span>
+                                    <div className="bg-[#09090b]/80 p-2.5 rounded border border-[#27272a]/40 text-emerald-400">{tc.stdout}</div>
+                                  </div>
+                                  <div className="text-emerald-400 text-[10px] font-bold uppercase tracking-wider pt-1">Passed</div>
                                 </div>
                               </div>
                             ))}
@@ -447,16 +465,25 @@ const ProblemPage = () => {
                         </div>
                       ) : (
                         <div>
-                          <h4 className="font-bold text-sm text-red-400">❌ Error</h4>
-                          <div className="mt-4 space-y-2">
+                          <h4 className="font-bold text-sm text-rose-400 flex items-center gap-2">✗ Test failed</h4>
+                          <div className="mt-5 space-y-3">
                             {runResult.testCases.map((tc, i) => (
-                              <div key={i} className="bg-[#1a1a1c] border border-gray-800 p-3 rounded text-xs">
-                                <div className="font-mono text-gray-400">
-                                  <div><span className="text-gray-500">Input:</span> {tc.stdin}</div>
-                                  <div><span className="text-gray-500">Expected:</span> {tc.expected_output}</div>
-                                  <div><span className="text-gray-500">Output:</span> {tc.stdout}</div>
-                                  <div className={tc.status_id == 3 ? 'text-green-500' : 'text-red-500'}>
-                                    {tc.status_id == 3 ? '✓ Passed' : '✗ Failed'}
+                              <div key={i} className="bg-[#18181b] border border-[#27272a] p-4 rounded-lg text-xs">
+                                <div className="font-mono text-gray-300 space-y-3">
+                                  <div className="whitespace-pre-wrap">
+                                    <span className="text-gray-500 font-semibold text-[10px] uppercase block mb-1 select-none">Input:</span>
+                                    <div className="bg-[#09090b]/80 p-2.5 rounded border border-[#27272a]/40 text-gray-200">{formatTestCaseInput(tc.stdin)}</div>
+                                  </div>
+                                  <div className="whitespace-pre-wrap">
+                                    <span className="text-gray-500 font-semibold text-[10px] uppercase block mb-1 select-none">Expected Output:</span>
+                                    <div className="bg-[#09090b]/80 p-2.5 rounded border border-[#27272a]/40 text-emerald-400">{tc.expected_output}</div>
+                                  </div>
+                                  <div className="whitespace-pre-wrap">
+                                    <span className="text-gray-500 font-semibold text-[10px] uppercase block mb-1 select-none">Your Output:</span>
+                                    <div className={`bg-[#09090b]/80 p-2.5 rounded border border-[#27272a]/40 ${tc.status_id == 3 ? 'text-emerald-400' : 'text-rose-400'}`}>{tc.stdout}</div>
+                                  </div>
+                                  <div className={`text-[10px] font-bold uppercase tracking-wider pt-1 ${tc.status_id == 3 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                    {tc.status_id == 3 ? 'Passed' : 'Failed'}
                                   </div>
                                 </div>
                               </div>
@@ -467,46 +494,43 @@ const ProblemPage = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-sm">
-                    Click "Run" to test your code with the example test cases.
+                  <div className="text-gray-500 text-xs bg-[#18181b]/50 border border-[#27272a] rounded-xl p-5">
+                    Click "Run" to execute your solution against sample test cases.
                   </div>
                 )}
               </div>
             )}
 
             {activeRightTab === 'result' && (
-              <div className="flex-1 p-4 overflow-y-auto">
-                <h3 className="font-semibold mb-4 text-sm text-gray-200">Submission Result</h3>
+              <div className="flex-1 p-6 overflow-y-auto">
+                <h3 className="font-bold text-xs text-white uppercase tracking-wider mb-4">Submission Verdict</h3>
                 {submitResult ? (
-                  <div className={`rounded-lg p-4 border ${submitResult.status ? 'border-green-500/30 bg-green-500/5' : 'border-red-500/30 bg-red-500/5'}`}>
+                  <div className={`rounded-xl p-5 border ${submitResult.status ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-rose-500/20 bg-rose-500/5'}`}>
                     <div>
                       {submitResult.status ? (
                         <div>
-                          <h4 className="font-bold text-base text-green-400">🎉 Accepted</h4>
-                          <div className="mt-4 space-y-1.5 text-sm text-gray-300">
-                            <p>Test Cases Passed: {submitResult.testCasesPassed
-}/{submitResult.
-testCasesTotal}</p>
-                            <p>Runtime: {submitResult.runtime + " sec"}</p>
-                            <p>Memory: {submitResult.memory + "KB"}</p>
+                          <h4 className="font-extrabold text-lg text-emerald-400">Accepted</h4>
+                          <div className="mt-4 space-y-2 text-xs text-gray-300">
+                            <div className="flex justify-between border-b border-[#27272a] pb-1.5"><span className="text-gray-500 font-medium">Test Cases Passed:</span><span className="font-bold text-white">{submitResult.testCasesPassed} / {submitResult.testCasesTotal}</span></div>
+                            <div className="flex justify-between border-b border-[#27272a] pb-1.5"><span className="text-gray-500 font-medium">Runtime:</span><span className="font-bold text-white">{submitResult.runtime}s</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500 font-medium">Memory Usage:</span><span className="font-bold text-white">{submitResult.memory} KB</span></div>
                           </div>
                         </div>
                       ) : (
                         <div>
-                          <h4 className="font-bold text-base text-red-400">❌ {submitResult.error}</h4>
-                          <div className="mt-4 space-y-1.5 text-sm text-gray-300">
-                            {/* console.log(submitResult); */}
-                            <p>Runtime: {submitResult.runtime + " sec"}</p>
-                            <p>Memory: {submitResult.memory + "KB"}</p>
-                            <p>Test Cases Passed: {submitResult.passedTestCases}/{submitResult.totalTestCases}</p>
+                          <h4 className="font-bold text-base text-rose-400">{submitResult.error || "Wrong Answer"}</h4>
+                          <div className="mt-4 space-y-2 text-xs text-gray-300">
+                            <div className="flex justify-between border-b border-[#27272a] pb-1.5"><span className="text-gray-500 font-medium">Test Cases Passed:</span><span className="font-bold text-white">{submitResult.passedTestCases || 0} / {submitResult.totalTestCases || 0}</span></div>
+                            <div className="flex justify-between border-b border-[#27272a] pb-1.5"><span className="text-gray-500 font-medium">Runtime:</span><span className="font-bold text-white">{submitResult.runtime || 0}s</span></div>
+                            <div className="flex justify-between"><span className="text-gray-500 font-medium">Memory Usage:</span><span className="font-bold text-white">{submitResult.memory || 0} KB</span></div>
                           </div>
                         </div>
                       )}
                     </div>
                   </div>
                 ) : (
-                  <div className="text-gray-500 text-sm">
-                    Click "Submit" to submit your solution for evaluation.
+                  <div className="text-gray-500 text-xs bg-[#18181b]/50 border border-[#27272a] rounded-xl p-5">
+                    Click "Submit" to run your solution against the full test suite.
                   </div>
                 )}
               </div>

@@ -5,10 +5,11 @@ const storedToken = typeof window !== 'undefined' ? localStorage.getItem('token'
 if (storedToken) defaultHeaders['Authorization'] = `Bearer ${storedToken}`;
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
+  // baseURL: import.meta.env.VITE_BACKEND_URL,
+  baseURL: "http://localhost:3000",
   withCredentials: true,
 //   timeout: 10000, // Aborts request if it takes longer than 10 seconds
-    withCredentials: true, // Include cookies in requests
+    // withCredentials: true, // Include cookies in requests
   headers: { 'Content-Type': 'application/json' }
 });
 

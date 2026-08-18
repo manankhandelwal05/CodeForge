@@ -1,6 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axiosClient from './utils/axiosClient'
 
+export const sendOtp = createAsyncThunk(
+  'auth/sendOtp',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axiosClient.post('/user/send-otp', userData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: error.message });
+    }
+  }
+);
+
 export const registerUser = createAsyncThunk(
   'auth/register',
   async (userData, { rejectWithValue }) => {
@@ -13,7 +25,7 @@ export const registerUser = createAsyncThunk(
     }
     return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -31,7 +43,7 @@ export const loginUser = createAsyncThunk(
       }
       return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -43,7 +55,7 @@ export const checkAuth = createAsyncThunk(
       const { data } = await axiosClient.get('/user/check');
       return data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -55,7 +67,7 @@ export const logoutUser = createAsyncThunk(
       await axiosClient.post('/user/logout');
       return null;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );

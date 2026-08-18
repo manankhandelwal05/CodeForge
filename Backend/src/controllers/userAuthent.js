@@ -4,44 +4,7 @@ const validate = require('../utils/validator');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const {OAuth2Client}=require("google-auth-library");
-
-const client =new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-const register = async (req,res)=>{
-    
-    try{
-         console.log(req.body);  // Log the request body for debugging
-        // validate the data;
-      validate(req.body); 
-      const {firstName, emailId, password}  = req.body;
-
-      req.body.password = await bcrypt.hash(password, 10);
-      req.body.role = 'user'
-    //
-    
-     const user =  await User.create(req.body);
-     const token =  jwt.sign({_id:user._id , emailId:emailId, role:'user'},process.env.JWT_KEY,{expiresIn: 60*60});
-     const isProduction = process.env.NODE_ENV === "production";
-
-res.cookie("token", token, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? "None" : "Lax",
-    maxAge: 60 * 60 * 1000
-});
-     res.status(201).json({
-    user: {
-        _id: user._id,
-        firstName: user.firstName,
-        emailId: user.emailId,
-        role: user.role
-    },
-    message: "User Registered Successfully"
-});
-    }
-    catch(err){
-        res.status(400).send("Error: "+err);
-    }
-}
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 
 const login = async (req,res)=>{
@@ -90,7 +53,8 @@ res.cookie("token", token, {
 });
     }
     catch(err){
-        res.status(401).send("Error: "+err);
+        console.error("Login error:", err);
+        res.status(401).json({ message: err.message });
     }
 }
 
@@ -116,12 +80,12 @@ res.clearCookie("token", {
     sameSite: isProduction ? "None" : "Lax"
 });
 
-res.send("Logged Out Successfully");
-    res.send("Logged Out Succesfully");
+res.status(200).json({ message: "Logged Out Successfully" });
 
     }
     catch(err){
-       res.status(503).send("Error: "+err);
+       console.error("Logout error:", err);
+       res.status(503).json({ message: err.message });
     }
 }
 
@@ -232,4 +196,5 @@ res.status(200).json({
     }
 }
 
-module.exports = {register, login,logout,adminRegister,deleteProfile, googleLogin};
+
+module.exports = {login,logout,adminRegister,deleteProfile, googleLogin};

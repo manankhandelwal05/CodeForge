@@ -4,10 +4,64 @@ import { Pause, Play } from 'lucide-react';
 
 
 const Editorial = ({ secureUrl, thumbnailUrl, duration,textEditorial }) => {
- console.log("secureUrl:", secureUrl);
+  console.log("secureUrl:", secureUrl);
   console.log("thumbnailUrl:", thumbnailUrl);
   console.log("duration:", duration);
   console.log("textEditorial:", textEditorial);
+
+  // Custom parser to translate markdown content into styled HTML safely
+  const renderMarkdown = (text) => {
+    if (!text) return '';
+    
+    // Basic HTML escaping
+    let html = text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    // Headers
+    html = html.replace(/^### (.*?)$/gm, '<h3 class="text-base font-bold text-white mt-4 mb-2">$1</h3>');
+    html = html.replace(/^## (.*?)$/gm, '<h2 class="text-lg font-bold text-white mt-5 mb-2">$1</h2>');
+    html = html.replace(/^# (.*?)$/gm, '<h1 class="text-xl font-extrabold text-white mt-6 mb-3 border-b border-zinc-800 pb-1">$1</h1>');
+
+    // Fenced Code block
+    html = html.replace(/```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, '<pre class="bg-black/50 border border-zinc-800 p-4 rounded-xl font-mono text-xs text-zinc-300 overflow-x-auto my-4">$1</pre>');
+
+    // Inline Code
+    html = html.replace(/`([^`\n]+)`/g, '<code class="bg-zinc-850 text-zinc-250 px-1.5 py-0.5 rounded font-mono text-[11px] border border-zinc-800">$1</code>');
+
+    // Bold
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-white">$1</strong>');
+
+    // Italics
+    html = html.replace(/\*([^*]+)\*/g, '<em class="italic text-zinc-300">$1</em>');
+
+    // Lists
+    html = html.replace(/^[*-] (.*?)$/gm, '<li class="ml-4 list-disc text-zinc-300 my-1">$1</li>');
+
+    // Blockquotes
+    html = html.replace(/^> (.*?)$/gm, '<blockquote class="border-l-4 border-zinc-700 pl-4 py-1 italic text-zinc-400 my-3">$1</blockquote>');
+
+    // Paragraph split
+    const blocks = html.split(/(\n\n|<h[1-3]>|<pre>|<\/pre>|<li>|<blockquote>|<\/blockquote>)/);
+    html = blocks.map(block => {
+      if (!block.trim()) return '';
+      if (
+        block.startsWith('<h') || 
+        block.startsWith('<pre') || 
+        block.startsWith('</pre') || 
+        block.startsWith('<li') || 
+        block.startsWith('<block') || 
+        block.startsWith('</block') || 
+        block === '\n\n'
+      ) {
+        return block;
+      }
+      return `<p class="text-zinc-300 leading-relaxed my-2 text-sm">${block}</p>`;
+    }).join('');
+
+    return html;
+  };
 
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -122,9 +176,10 @@ const Editorial = ({ secureUrl, thumbnailUrl, duration,textEditorial }) => {
     <div className="mt-8 bg-base-800 rounded-xl p-6">
 
     {textEditorial ? (
-        <p className="whitespace-pre-wrap">
-            {textEditorial}
-        </p>
+        <div 
+            className="prose prose-invert max-w-none text-zinc-350 leading-relaxed text-sm"
+            dangerouslySetInnerHTML={{ __html: renderMarkdown(textEditorial) }}
+        />
     ) : (
       <div className="mt-8 bg-base-800 rounded-xl p-6 text-center">
         <p className="text-gray-400">

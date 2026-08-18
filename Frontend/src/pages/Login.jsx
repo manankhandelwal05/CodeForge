@@ -68,175 +68,119 @@ export default function Login() {
 }
 
   return (
-    <div className="min-h-screen bg-black flex justify-center items-center px-4">
-
-      <div className="w-full max-w-md">
-
+    <div className="min-h-screen bg-[#09090b] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(255,255,255,0.05),rgba(255,255,255,0))] flex justify-center items-center px-4">
+      <div className="w-full max-w-md bg-[#09090b]/80 backdrop-blur-xl border border-[#27272a] p-8 rounded-2xl shadow-2xl">
+        
         {/* Logo */}
-
-        <div className="flex flex-col items-center mb-10">
-
-          <div className="mb-4">
-            <Code2
-              size={50}
-              className="text-white"
-            />
+        <div className="flex flex-col items-center mb-8">
+          <div className="h-12 w-12 rounded-xl bg-gradient-to-tr from-zinc-700 to-zinc-500 flex items-center justify-center shadow-lg shadow-zinc-500/10 mb-4">
+            <Code2 size={24} className="text-white" />
           </div>
-
-          <h1 className="text-4xl font-light text-white">
-
-            Welcome to{" "}
-
-            <span className="font-bold">
-              CodeForge
-            </span>
-
+          <h1 className="text-3xl font-bold tracking-tight text-white">
+            Welcome Back
           </h1>
-
-          <p className="text-gray-400 mt-3 text-center">
+          <p className="text-gray-400 text-sm mt-2 text-center">
             Login to continue your coding journey.
           </p>
-
         </div>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5"
-        >
-
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          
           {/* Email */}
-
           <div>
-
-            <label className="w-full input input-bordered bg-black border-gray-700 flex items-center gap-3 h-14">
-
-              <Mail
-                size={18}
-                className="text-gray-400"
-              />
-
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                <Mail size={18} />
+              </div>
               <input
                 type="email"
                 placeholder="Email Address"
-                className="grow bg-transparent text-white"
+                className="w-full bg-[#18181b]/60 border border-[#27272a] rounded-xl pl-10 pr-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition duration-200"
                 {...register("emailId")}
               />
-
-            </label>
-
-            <p className="text-error text-sm mt-1">
-              {errors.email?.message}
+            </div>
+            <p className="text-rose-500 text-xs mt-1.5 ml-1">
+              {errors.emailId?.message}
             </p>
-
           </div>
 
           {/* Password */}
-
           <div>
-
-            <label className="w-full input input-bordered bg-black border-gray-700 flex items-center gap-3 h-14">
-
-              <Lock
-                size={18}
-                className="text-gray-400"
-              />
-
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-500">
+                <Lock size={18} />
+              </div>
               <input
-                type={
-                  showPassword
-                    ? "text"
-                    : "password"
-                }
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="grow bg-transparent text-white"
+                className="w-full bg-[#18181b]/60 border border-[#27272a] rounded-xl pl-10 pr-10 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-400 transition duration-200"
                 {...register("password")}
               />
-
               <button
                 type="button"
-                onClick={() =>
-                  setShowPassword(!showPassword)
-                }
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-white transition duration-200"
+                onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (
-                  <EyeOff
-                    size={18}
-                    className="text-gray-400"
-                  />
-                ) : (
-                  <Eye
-                    size={18}
-                    className="text-gray-400"
-                  />
-                )}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
-
-            </label>
-
-            <p className="text-error text-sm mt-1">
+            </div>
+            <p className="text-rose-500 text-xs mt-1.5 ml-1">
               {errors.password?.message}
             </p>
-
           </div>
 
           {/* Forgot Password */}
-
           <div className="text-right">
-
             <button
               type="button"
-              className="text-sm text-gray-400 hover:text-white duration-200"
+              className="text-xs text-gray-400 hover:text-white transition duration-200"
             >
               Forgot Password?
             </button>
-
           </div>
 
           {/* Login Button */}
-
           <button
             type="submit"
             disabled={isSubmitting}
-            className="btn btn-neutral w-full h-14 text-lg rounded-xl"
+            className="w-full bg-zinc-100 hover:bg-zinc-200 text-zinc-950 font-medium py-3.5 rounded-xl shadow-lg shadow-zinc-500/5 hover:shadow-zinc-500/10 active:scale-[0.99] transition-all duration-200 flex justify-center items-center gap-2 cursor-pointer disabled:opacity-50"
           >
-
             {isSubmitting ? (
               <>
-                <span className="loading loading-spinner loading-sm"></span>
+                <span className="loading loading-spinner loading-xs"></span>
                 Logging In...
               </>
             ) : (
               "Login"
             )}
-
           </button>
-          <div className="divider">OR</div>
 
-<GoogleLogin
-    onSuccess={handleGoogleLogin}
-    onError={() => console.log("Login Failed")}
-/>
+          <div className="relative flex py-2 items-center">
+            <div className="flex-grow border-t border-[#27272a]"></div>
+            <span className="flex-shrink mx-4 text-gray-500 text-xs uppercase tracking-wider">Or continue with</span>
+            <div className="flex-grow border-t border-[#27272a]"></div>
+          </div>
+
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => console.log("Login Failed")}
+            />
+          </div>
 
           {/* Signup */}
-
-          <p className="text-center text-gray-400">
-
+          <p className="text-center text-gray-400 text-sm mt-6">
             Don't have an account?{" "}
-
             <Link
               to="/signup"
-              className="text-white font-semibold hover:underline"
+              className="text-zinc-300 font-semibold hover:text-white hover:underline transition duration-200"
             >
               Create Account
             </Link>
-
           </p>
 
         </form>
-        
-
       </div>
-
     </div>
   );
 }

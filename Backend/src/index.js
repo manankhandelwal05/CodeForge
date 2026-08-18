@@ -15,7 +15,8 @@ const cors = require('cors')
 // console.log("Hello")
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    // origin: process.env.FRONTEND_URL,
+    origin:"http://localhost:5173",
     credentials: true 
 }))
 
@@ -32,14 +33,18 @@ app.use("/editorial", editorialRouter);
 
 const InitalizeConnection = async ()=>{
     try{
+        console.log("Connecting to MongoDB...");
+        await main();
+        console.log("MongoDB connected successfully.");
 
-        await Promise.all([main(),redisClient.connect()]);
-        console.log("DB Connected");
+        console.log("Connecting to Redis...");
+        await redisClient.connect();
+        console.log("Redis connected successfully.");
+
         const PORT = process.env.PORT || 3000;
         app.listen(process.env.PORT, ()=>{
             console.log("Server listening at port number: "+ process.env.PORT);
-        })
-
+        });
     }
     catch(err){
         console.log("Error: "+err);
