@@ -2010,7 +2010,7 @@ function AdminUpdatePanel() {
 
         {/* Header */}
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/admin/dashboard")}
           className="flex items-center gap-2 text-gray-400 hover:text-white transition"
         >
           <ArrowLeft size={18} />
