@@ -1,19 +1,21 @@
-const { transporter } = require("../config/mail.js");
+// const { transporter } = require("../config/mail.js");
+const { sendEmail } = require("../config/mail.js");
 
-const sendOTP = async(email,otp)=>{
+const sendOTP = async (email, otp) => {
+    try {
+        const response = await sendEmail({
+            to_email: email,
+            otp: otp
+        });
 
-    await transporter.sendMail({
-        from:process.env.EMAIL_USER,
-        to:email,
-        subject:"CodeForge OTP Verification",
-        html:`
-            <h2>CodeForge Verification</h2>
-            <p>Your OTP is</p>
-            <h1>${otp}</h1>
-            <p>Expires in 5 minutes.</p>
-        `
-    });
+        console.log("OTP email sent successfully:", response);
+    } catch (error) {
+        console.error("EmailJS error:", error);
+        throw new Error("Failed to send OTP");
+    }
+};
 
-}
-
-module.exports = { sendOTP, sendOTPEmail: sendOTP };
+module.exports = {
+    sendOTP,
+    sendOTPEmail: sendOTP
+};
