@@ -5,12 +5,11 @@ const userSchema = new Schema({
     firstName:{
         type: String,
         required: true,
-        minLength:3,
+        minLength:2,
         maxLength:20
     },
     lastName:{
         type:String,
-        minLength:3,
         maxLength:20,
     },
     emailId:{

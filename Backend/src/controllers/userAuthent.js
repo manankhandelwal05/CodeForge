@@ -161,7 +161,7 @@ if (!user) {
     const names = payload.name.trim().split(" ");
 
 const firstName = names[0];
-const lastName = names.slice(1).join(" ");
+const lastName = names.slice(1).join(" ") || undefined;
     user = await User.create({
         firstName: firstName,
         lastName: lastName,
