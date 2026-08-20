@@ -12,6 +12,11 @@ const videoRouter = require("./routes/videoCreator");
 const editorialRouter = require("./routes/editorialRoutes");
 const cors = require('cors')
 
+app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    next();
+});
+
 // console.log("Hello")
 
 app.use(cors({

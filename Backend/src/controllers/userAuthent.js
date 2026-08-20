@@ -134,10 +134,17 @@ const deleteProfile = async(req,res)=>{
 const googleLogin = async (req, res) => {
     try {
         const { credential } = req.body;
+        if (!credential) {
+            return res.status(400).json({ message: "Google credential is required." });
+        }
+        if (!process.env.GOOGLE_CLIENT_ID) {
+            console.error("Google login is not configured: GOOGLE_CLIENT_ID is missing.");
+            return res.status(500).json({ message: "Google login is not configured." });
+        }
         const ticket = await client.verifyIdToken({
         idToken: credential,
         audience: process.env.GOOGLE_CLIENT_ID
-});
+        });
 
         const payload = ticket.getPayload();
 
@@ -192,7 +199,11 @@ res.status(200).json({
     message: "Logged In Successfully"
 });
     } catch (err) {
-        res.status(401).send("Error: " + err);
+        console.error("Google login error:", err.message);
+        res.status(401).json({ 
+            message: "Google credential verification failed.", 
+            error: err.message 
+        });
     }
 }
 
